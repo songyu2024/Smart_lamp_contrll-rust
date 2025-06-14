@@ -1,0 +1,429 @@
+.logo.vanilla:hover {
+  filter: drop-shadow(0 0 2em #ffe21c);
+}
+@font-face {
+    font-family: 'DS-Digital';
+    src: url('../../front/DS-Digital/DS-DIGI-1.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* 保持原有的文字调整样式 */
+:root {
+    -moz-text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+
+/* 液态玻璃样式 - 完全复制原项目参数 */
+.liquidGlass-wrapper {
+    position: relative;
+    display: flex;
+    font-weight: 600;
+    overflow: hidden;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 6px 6px rgba(0, 0, 0, 0.2), 0 0 20px rgba(0, 0, 0, 0.1);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 2.2);
+    border-radius: 25px; /* 确保所有液态玻璃元素都有圆角 */
+}
+
+.liquidGlass-effect {
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+    -webkit-backdrop-filter: blur(3px);
+    backdrop-filter: blur(3px);
+    filter: url(#glass-distortion);
+    overflow: hidden;
+    isolation: isolate;
+    border-radius: 25px; /* 继承圆角 */
+}
+
+.liquidGlass-tint {
+    z-index: 1;
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.25);
+    border-radius: 25px; /* 继承圆角 */
+}
+
+.liquidGlass-shine {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    overflow: hidden;
+    box-shadow: inset 2px 2px 1px 0 rgba(255, 255, 255, 0.5),
+        inset -1px -1px 1px 1px rgba(255, 255, 255, 0.5);
+    border-radius: 25px; /* 继承圆角 */
+}
+
+.liquidGlass-text {
+    z-index: 3;
+    color: white;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 25px; /* 继承圆角 */
+}
+
+/* 页面主体样式 - 保持原有排版 */
+body {
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    height: 100vh;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    font-family: sans-serif;
+    font-weight: 300;
+    /* 添加默认背景色，避免白屏 */
+    background-color: #1a1a1a;
+}
+
+.wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    margin-top: calc(25vh - 50px);
+    padding-left: 260px; /* 时钟中心点距离窗口左边240px */
+}
+
+/* 时钟专用样式 - 保持原有样式 */
+.clock-container {
+    position: relative;
+    width: 480px;
+    height: 110px;
+    margin-left: 0px; /* 中心点在240px位置 */
+    padding: 0;
+    border-radius: 25px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    justify-content: center;
+    align-items: center;
+}
+
+.clock-container:hover {
+    transform: scale(1.02);
+}
+
+.clock-container:active {
+    transform: scale(0.98);
+}
+
+.time {
+    font-family: 'DS-Digital', monospace;
+    font-size: 6.2rem; /* 确保这个生效 */
+    font-weight: normal;
+    color: white;
+    letter-spacing: 3px; /* 从5px改为3px */
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.6), 
+                 2px 2px 4px rgba(0, 0, 0, 0.8);
+    margin: 0;
+    line-height: 1;
+    width: 100%;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+/* 修改加载动画 - 只影响文字，不影响液态玻璃效果 */
+.clock-container.loading .time {
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.7; }
+    50% { opacity: 1; }
+    100% { opacity: 0.7; }
+}
+
+/* 亮度控制容器 - 精确对齐时钟 */
+.brightness-container {
+    position: fixed;
+    bottom: calc(25% - 20px);
+    left: 218px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    z-index: 1000;
+}
+
+/* 亮度图标 - 放在滑块外面 */
+.brightness-icon {
+    color: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.3s ease;
+    flex-shrink: 0;
+    pointer-events: none; /* 图标不拦截点击事件 */
+}
+
+.brightness-icon-left {
+    opacity: 0.6;
+}
+
+.brightness-icon-right {
+    opacity: 1;
+}
+
+/* 滑块容器 - 恢复完整的液态玻璃胶囊外观 */
+.brightness-slider-container {
+    width: 480px; /* 与时钟宽度一致 */
+    height: 60px;
+    border-radius: 30px; /* 胶囊型圆角：高度的一半 */
+    transition: transform 0.1s ease-out;
+    overflow: hidden; /* 确保内容不超出圆角 */
+    pointer-events: none; /* 容器不拦截点击事件 */
+    
+    /* 确保液态玻璃效果完整 */
+    position: relative;
+    display: flex;
+    font-weight: 600;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 6px 6px rgba(0, 0, 0, 0.2), 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.brightness-slider-container:hover {
+    transform: scale(1.02);
+}
+
+/* 确保滑块容器内的液态玻璃元素也有圆角 */
+.brightness-slider-container .liquidGlass-effect,
+.brightness-slider-container .liquidGlass-tint,
+.brightness-slider-container .liquidGlass-shine,
+.brightness-slider-container .liquidGlass-text {
+    border-radius: 30px; /* 胶囊型圆角 */
+    pointer-events: none;
+}
+
+/* 滑块包装器 - 不拦截点击事件 */
+.brightness-slider-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none; /* 包装器不拦截点击事件 */
+    border-radius: 30px; /* 继承圆角 */
+}
+
+/* 进度条填充 - 胶囊型圆角 */
+.brightness-slider-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 0%; /* 默认0% */
+    background: #ffffff; /* 苹果白色 */
+    border-radius: 30px; /* 胶囊型圆角 */
+    transition: width 0.1s ease-out;
+    z-index: 1;
+    pointer-events: none; /* 进度条不拦截点击事件 */
+}
+
+/* 原生滑块样式 - 只有这个元素可以交互 */
+.brightness-slider-input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 100; /* 确保在最顶层 */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background: transparent;
+    outline: none !important; /* 强制移除轮廓 */
+    border: none;
+    pointer-events: auto; /* 只有滑块可以接收点击事件 */
+    border-radius: 30px; /* 胶囊型圆角 */
+}
+
+/* 移除焦点轮廓 */
+.brightness-slider-input:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* WebKit 滑块样式 - 完全透明 */
+.brightness-slider-input::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: transparent;
+    cursor: pointer;
+    border: none;
+    box-shadow: none;
+    outline: none;
+}
+
+.brightness-slider-input::-webkit-slider-track {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 60px;
+    background: transparent;
+    border: none;
+    border-radius: 30px; /* 胶囊型圆角 */
+    outline: none;
+}
+
+/* Firefox 滑块样式 - 完全透明 */
+.brightness-slider-input::-moz-range-thumb {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: transparent;
+    cursor: pointer;
+    border: none;
+    box-shadow: none;
+    -moz-appearance: none;
+    outline: none;
+}
+
+.brightness-slider-input::-moz-range-track {
+    height: 60px;
+    background: transparent;
+    border: none;
+    border-radius: 30px; /* 胶囊型圆角 */
+    outline: none;
+}
+
+.brightness-slider-input::-moz-focus-outer {
+    border: 0;
+    outline: none;
+}
+
+/* 隐藏标签 */
+.brightness-slider-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* 隐藏SVG */
+.hidden-svg {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+}
+
+/* 无障碍支持 */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .brightness-container {
+        left: 30px;
+        gap: 15px;
+    }
+    
+    .brightness-slider-container {
+        width: 350px;
+        height: 50px;
+        border-radius: 25px; /* 调整胶囊圆角 */
+    }
+    
+    .brightness-slider-container .liquidGlass-effect,
+    .brightness-slider-container .liquidGlass-tint,
+    .brightness-slider-container .liquidGlass-shine,
+    .brightness-slider-container .liquidGlass-text,
+    .brightness-slider-wrapper,
+    .brightness-slider-fill,
+    .brightness-slider-input,
+    .brightness-slider-input::-webkit-slider-track,
+    .brightness-slider-input::-moz-range-track {
+        border-radius: 25px; /* 响应式胶囊圆角 */
+    }
+    
+    .brightness-icon svg {
+        width: 18px;
+        height: 18px;
+    }
+}
+
+@media (max-width: 480px) {
+    .brightness-container {
+        left: 20px;
+        gap: 10px;
+    }
+    
+    .brightness-slider-container {
+        width: 250px;
+        height: 45px;
+        border-radius: 22.5px; /* 调整胶囊圆角 */
+    }
+    
+    .brightness-slider-container .liquidGlass-effect,
+    .brightness-slider-container .liquidGlass-tint,
+    .brightness-slider-container .liquidGlass-shine,
+    .brightness-slider-container .liquidGlass-text,
+    .brightness-slider-wrapper,
+    .brightness-slider-fill,
+    .brightness-slider-input,
+    .brightness-slider-input::-webkit-slider-track,
+    .brightness-slider-input::-moz-range-track {
+        border-radius: 22.5px; /* 响应式胶囊圆角 */
+    }
+    
+    .brightness-icon svg {
+        width: 16px;
+        height: 16px;
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color: #f6f6f6;
+    background-color: #2f2f2f;
+  }
+
+  a:hover {
+    color: #24c8db;
+  }
+
+  input,
+  button {
+    color: #ffffff;
+    background-color: #0f0f0f98;
+  }
+  button:active {
+    background-color: #0f0f0f69;
+  }
+}

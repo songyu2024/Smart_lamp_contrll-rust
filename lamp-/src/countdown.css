@@ -1,0 +1,559 @@
+@font-face {
+    font-family: 'DS-Digital';
+    src: url('../../front/DS-Digital/DS-DIGI-1.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'AaLanTingTiShi';
+    src: url('file:///G:/lamp/lamp/front/AaLanTingTiShi-LuoBiRuShen-2.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* 页面主体样式 */
+body {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    font-family: 'AaLanTingTiShi', 'Microsoft YaHei', sans-serif;
+    font-weight: 300;
+    overflow: hidden;
+    /* 添加默认背景色，避免白屏 */
+    background-color: #1a1a1a;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+/* 液态玻璃样式 - 与时钟完全一致 */
+.liquidGlass-wrapper {
+    position: relative;
+    display: flex;
+    font-weight: 600;
+    overflow: hidden;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 6px 6px rgba(0, 0, 0, 0.2), 0 0 20px rgba(0, 0, 0, 0.1);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 2.2);
+    border-radius: 25px;
+}
+
+.liquidGlass-effect {
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+    -webkit-backdrop-filter: blur(3px);
+    backdrop-filter: blur(3px);
+    filter: url(#glass-distortion);
+    overflow: hidden;
+    isolation: isolate;
+}
+
+.liquidGlass-tint {
+    z-index: 1;
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.liquidGlass-shine {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    overflow: hidden;
+    box-shadow: inset 2px 2px 1px 0 rgba(255, 255, 255, 0.5),
+        inset -1px -1px 1px 1px rgba(255, 255, 255, 0.5);
+}
+
+.liquidGlass-text {
+    z-index: 3;
+    color: white;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 5px 20px;
+    box-sizing: border-box;
+}
+
+/* 加载动画 - 只影响不透明度，不影响字体 */
+.liquidGlass-text.loading-animation {
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.8; }
+    50% { opacity: 1; }
+    100% { opacity: 0.8; }
+}
+
+/* 天气卡片样式 */
+.weather-card {
+    width: 200px;
+    height: 80px;
+    margin-bottom: 20px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.weather-card:hover {
+    transform: scale(1.02);
+}
+
+.weather-card:active {
+    transform: scale(0.98);
+}
+
+.weather-type {
+    font-size: 1.8em;
+    font-weight: bold;
+    margin-bottom: 5px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    font-family: 'AaLanTingTiShi', 'Microsoft YaHei', sans-serif !important;
+}
+
+.weather-temp {
+    font-size: 1.5em;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    font-family: 'AaLanTingTiShi', 'Microsoft YaHei', sans-serif !important;
+}
+
+/* 倒计时卡片样式 - 完整液态玻璃效果 */
+.glass-card {
+    position: relative;
+    width: 800px;
+    height: auto;
+    margin: 0 20px 30px auto;
+    transform: translateX(120px); /* 改回120px */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    
+    /* 液态玻璃效果 - 与时钟完全一致 */
+    overflow: hidden;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 6px 6px rgba(0, 0, 0, 0.2), 0 0 20px rgba(0, 0, 0, 0.1);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 2.2);
+    border-radius: 25px; /* 设置为25px圆角 */
+}
+
+.glass-card:hover {
+    transform: translateX(120px) scale(1.02);
+    box-shadow: 0 8px 8px rgba(0, 0, 0, 0.25), 0 0 25px rgba(0, 0, 0, 0.15);
+}
+
+.glass-card:active {
+    transform: translateX(120px) scale(0.98);
+    transition: all 0.1s ease;
+}
+
+/* 天气卡片 - 调回原始大小 */
+.weather-card {
+    position: relative;
+    width: 200px; /* 调回原来的大小 */
+    height: 80px; /* 调回原来的大小 */
+    margin: 0 auto 20px auto;
+    transform: translateX(420px); /* 重新计算居中位置：(800-200)/2+120 = 420 */
+    
+    /* 液态玻璃效果 - 与时钟完全一致 */
+    overflow: hidden;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 6px 6px rgba(0, 0, 0, 0.2), 0 0 20px rgba(0, 0, 0, 0.1);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 2.2);
+    border-radius: 25px; /* 设置为25px圆角 */
+}
+
+.weather-card:hover {
+    transform: translateX(420px) scale(1.02);
+    box-shadow: 0 8px 8px rgba(0, 0, 0, 0.25), 0 0 25px rgba(0, 0, 0, 0.15);
+}
+
+.weather-card:active {
+    transform: translateX(420px) scale(0.98);
+    transition: all 0.1s ease;
+}
+
+/* 一言卡片 - 修复动画乱飞 */
+.quote-card {
+    position: relative;
+    width: 750px;
+    max-width: 750px;
+    height: auto;
+    margin-bottom: 20px;
+    transform: translateX(120px); /* 右移120px */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    
+    /* 液态玻璃效果 - 与时钟完全一致 */
+    overflow: hidden;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 6px 6px rgba(0, 0, 0, 0.2), 0 0 20px rgba(0, 0, 0, 0.1);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 2.2);
+    border-radius: 25px; /* 设置为25px圆角 */
+}
+
+.quote-card:hover {
+    transform: translateX(120px) scale(1.02);
+    box-shadow: 0 8px 8px rgba(0, 0, 0, 0.25), 0 0 25px rgba(0, 0, 0, 0.15);
+}
+
+.quote-card:active {
+    transform: translateX(120px) scale(0.98);
+    transition: all 0.1s ease;
+}
+
+/* 严格防止一言内容乱飞 */
+.quote-card,
+.quote-card *,
+.quote-card .quote,
+.quote-card .quote-content,
+.quote-card .quote-text,
+.quote-card p,
+.quote-card div,
+.quote-card span {
+    /* 强制所有一言相关元素不进行额外变换 */
+    transform: none !important;
+}
+
+/* 但是保持卡片本身的变换 */
+.quote-card {
+    transform: translateX(120px) !important;
+}
+
+.quote-card:hover {
+    transform: translateX(120px) scale(1.02) !important;
+}
+
+.quote-card:active {
+    transform: translateX(120px) scale(0.98) !important;
+}
+
+/* 确保内容在正确位置 */
+.quote-content {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+}
+
+/* 防止动画乱飞 - 严格限制内容元素 */
+.countdown-content,
+.weather-content,
+.quote-content,
+.time,
+.title,
+.quote,
+.weather-type,
+.weather-temp {
+    position: relative;
+    z-index: 1;
+    transform: none !important;
+}
+
+/* 确保一言文字不乱飞 */
+.quote-card * {
+    transform: none !important;
+}
+
+/* 倒计时数字动画保持正常 */
+.time-unit {
+    position: relative;
+    display: inline-block;
+    transform: none !important;
+}
+
+.time-unit .digit {
+    display: inline-block;
+    transition: transform 0.6s ease-in-out;
+    transform-style: preserve-3d;
+}
+
+.time-unit .digit.flip {
+    animation: flipAnimation 0.6s ease-in-out;
+}
+
+@keyframes flipAnimation {
+    0% { transform: rotateX(0deg); }
+    50% { transform: rotateX(-90deg); }
+    100% { transform: rotateX(0deg); }
+}
+
+/* 确保内容不被变换影响 */
+.countdown-content,
+.weather-content,
+.quote-content {
+    position: relative;
+    z-index: 1;
+}
+
+.title {
+    font-size: 4em;
+    margin: 0 0 10px 0;
+    font-weight: 800;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    color: #ffffff;
+    letter-spacing: 2px;
+    font-family: 'AaLanTingTiShi', 'Microsoft YaHei', sans-serif !important;
+}
+
+.countdown {
+    font-family: 'DS-Digital', monospace;
+    font-size: 5em;
+    text-shadow: 1px 1px 2px #000;
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 0;
+}
+
+.num {
+    font-family: 'DS-Digital', monospace !important;
+    font-size: 1em;
+    color: white;
+    letter-spacing: 1px;
+}
+
+.label {
+    font-family: 'AaLanTingTiShi', 'Microsoft YaHei', sans-serif !important;
+    font-size: 0.6em;
+    color: #00ffff;
+    margin: 0 10px;
+    align-self: baseline;
+    font-weight: bold;
+    text-shadow: 0 0 8px rgba(0, 255, 255, 0.7);
+}
+
+/* 一言卡片样式 */
+.quote-card {
+    width: 750px; /* 设置固定宽度为750px */
+    max-width: 750px;
+    height: auto;
+    margin-bottom: 20px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.quote-card:hover {
+    transform: scale(1.02);
+}
+
+.quote-card:active {
+    transform: scale(0.98);
+}
+
+.quote {
+    font-size: 2.4em;
+    text-shadow: 1px 1px 2px #000;
+    color: white;
+    font-family: 'AaLanTingTiShi', 'Microsoft YaHei', sans-serif !important;
+    word-wrap: break-word;
+    white-space: normal;
+    overflow-wrap: break-word;
+    line-height: 1.2;
+    font-weight: normal;
+}
+
+/* 倒计时容器样式 */
+.countdown-container {
+    width: 100%; /* 确保容器足够宽 */
+    max-width: 600px; /* 或者设置一个合适的最大宽度 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    padding: 10px;
+    box-sizing: border-box;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    margin-left: 0;
+    padding-left: 0;
+    left: 0; /* 如果使用了绝对定位 */
+}
+
+/* 倒计时显示样式 */
+.countdown-display {
+    display: flex;
+    justify-content: space-around; /* 平均分配空间 */
+    align-items: center;
+    width: 100%;
+}
+
+/* 针对具体的倒计时元素 */
+#countdown-section {
+    text-align: left;
+}
+
+.days, .hours, .minutes, .seconds {
+    text-align: left;
+    display: inline-block;
+    margin-right: 20px;
+}
+
+/* 如果使用了Grid布局 */
+.countdown-grid {
+    display: grid;
+    justify-content: start; /* Grid布局靠左对齐 */
+    text-align: left;
+}
+
+/* 强制重置所有左边距 */
+* {
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+}
+
+/* 或者只针对倒计时相关元素 */
+.countdown-container,
+.countdown-container * {
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+}
+
+/* 统一设置所有主要容器的宽度和边距 */
+.countdown-container,
+.quote-container,
+.hitokoto-container,
+.main-card {
+    width: 90%; /* 占窗口宽度的90% */
+    margin: 0 auto; /* 水平居中，左右边距自动相等 */
+    max-width: 1200px; /* 设置最大宽度，防止在大屏幕上过宽 */
+}
+
+/* 或者使用固定边距 */
+.countdown-container,
+.quote-container {
+    width: calc(100vw - 200px); /* 总宽度减去左右边距 */
+    margin-left: 100px;
+    margin-right: 100px;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .title {
+        font-size: 3.2em;
+    }
+    
+    .countdown {
+        font-size: 4em;
+    }
+    
+    .quote {
+        font-size: 1.8em;
+    }
+    
+    .glass-card {
+        width: 90%; /* 小屏幕时使用百分比宽度 */
+    }
+    
+    .quote-card {
+        width: 90%; /* 小屏幕时使用百分比宽度 */
+    }
+    
+    .weather-card {
+        width: 180px;
+    }
+
+    .time-unit {
+        font-size: 2.5rem;
+    }
+    
+    .countdown-container {
+        padding: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .title {
+        font-size: 2.6em;
+    }
+    
+    .countdown {
+        font-size: 2.8em;
+    }
+    
+    .quote {
+        font-size: 1.4em;
+    }
+    
+    .glass-card {
+        width: 95%; /* 更小屏幕时使用更大的百分比宽度 */
+    }
+    
+    .quote-card {
+        width: 95%; /* 更小屏幕时使用更大的百分比宽度 */
+    }
+    
+    .weather-card {
+        width: 160px;
+        height: 70px;
+    }
+    
+    .weather-type {
+        font-size: 1.6em;
+    }
+    
+    .weather-temp {
+        font-size: 1.3em;
+    }
+}
+
+/* 如果倒计时卡片有边距，也要移除 */
+.countdown-card {
+    margin-left: 0;
+    padding-left: 0;
+}
+
+/* 确保父容器也没有左边距 */
+.main-container, 
+.wrapper,
+body {
+    margin-left: 0;
+    padding-left: 0;
+}
+
+/* 如果使用了绝对定位 */
+.countdown-section {
+    position: absolute;
+    left: 0; /* 紧贴左边缘 */
+    margin-left: 0;
+    padding-left: 0;
+}
+
+/* 如果容器有圆角或阴影，可能需要调整 */
+.countdown-container {
+    border-radius: 0 15px 15px 0; /* 只保留右边的圆角 */
+}
